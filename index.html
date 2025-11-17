@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Facturación CFE - Proceso Completo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --verde-cfe: #00843D;
+            --verde-claro: #e8f5e9;
+            --verde-medio: #c8e6c9;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #f8fff8, #e0f7e9);
+            padding-top: 20px;
+            padding-bottom: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, var(--verde-cfe) 0%, #006b32 100%);
+            color: white;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 132, 61, 0.3);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background-color: white;
+            color: var(--verde-cfe);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .process-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--verde-cfe);
+        }
+        
+        .process-title {
+            border-bottom: 2px solid var(--verde-medio);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            color: var(--verde-cfe);
+            font-weight: 600;
+        }
+        
+        .step-card {
+            background-color: var(--verde-claro);
+            border: 1px solid var(--verde-medio);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .step-card.active {
+            background-color: white;
+            border: 2px solid var(--verde-cfe);
+            box-shadow: 0 4px 8px rgba(0, 132, 61, 0.2);
+        }
+        
+        .step-card.completed {
+            background-color: #f0f9f0;
+            border: 1px solid #a3d9a5;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--verde-cfe);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--verde-cfe);
+            margin-bottom: 10px;
+        }
+        
+        .form-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-cfe {
+            background-color: var(--verde-cfe);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .btn-cfe:hover {
+            background-color: #006b32;
+            color: white;
+        }
+        
+        .result-box {
+            background-color: #f8fff8;
+            border: 1px solid var(--verde-medio);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .invoice-preview {
+            background-color: white;
+            border: 2px dashed var(--verde-cfe);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .progress-bar-cfe {
+            background-color: var(--verde-cfe);
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--verde-cfe);
+        }
+        
+        .nav-pills .nav-link {
+            color: var(--verde-cfe);
+        }
+        
+        footer {
+            background-color: var(--verde-cfe);
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Encabezado -->
+        <div class="header-section text-center">
+            <div class="logo-container">
+                <div class="logo">CFE</div>
+            </div>
+            <h1>Sistema de Facturación</h1>
+            
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress mb-5" style="height: 10px;">
+            <div class="progress-bar progress-bar-cfe" role="progressbar" style="width: 0%;" id="progressBar"></div>
+        </div>
+
+        <!-- Proceso de Facturación -->
+        <div class="process-section">
+            <h3 class="process-title">Proceso de Facturación CFE</h3>
+            
+            <!-- Paso 1: Lectura del medidor -->
+            <div class="step-card" id="step1">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    Lectura del Medidor
+                </div>
+                <p>El lecturista de CFE realiza la lectura del consumo de energía.</p>
+                
+                <div class="form-section">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="lecturaAnterior" class="form-label">Lectura Anterior (kWh)</label>
+                                <input type="number" class="form-control" id="lecturaAnterior" value="1250" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="lecturaActual" class="form-label">Lectura Actual (kWh)</label>
+                                <input type="number" class="form-control" id="lecturaActual" min="1251" value="1450">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-cfe" onclick="calcularConsumo()">Calcular Consumo</button>
+                    
+                    <div class="result-box mt-3" id="consumoResult" style="display: none;">
+                        <h5>Resultado del Cálculo:</h5>
+                        <p>Consumo calculado: <span id="consumoCalculado">0</span> kWh</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paso 2: Validación de datos -->
+            <div class="step-card" id="step2">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    Validación de Datos
+                </div>
+                <p>Validar secuencia, tiempo de consumo y detección de anomalías.</p>
+                
+                <div class="form-section">
+                    <div class="mb-3">
+                        <label for="tipoServicio" class="form-label">Tipo de Servicio</label>
+                        <select class="form-select" id="tipoServicio">
+                            <option value="domestico">Doméstico</option>
+                            <option value="comercial">Comercial</option>
+                            <option value="industrial">Industrial</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Validaciones</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="valSecuencia" checked>
+                            <label class="form-check-label" for="valSecuencia">
+                                Validar secuencia y tiempo
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="valConsumo" checked>
+                            <label class="form-check-label" for="valConsumo">
+                                Validar consumo
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="valAnomalias">
+                            <label class="form-check-label" for="valAnomalias">
+                                Detección de anomalías
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-cfe" onclick="validarDatos()">Validar Datos</button>
+                    
+                    <div class="result-box mt-3" id="validacionResult" style="display: none;">
+                        <h5>Resultado de Validación:</h5>
+                        <p id="validacionMsg">Los datos han sido validados correctamente.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paso 3: Cálculo de tarifas -->
+            <div class="step-card" id="step3">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    Cálculo de Tarifas y Montos
+                </div>
+                <p>Aplicar precio de acuerdo al consumo, calcular IVA y subtotal.</p>
+                
+                <div class="form-section">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tarifaAplicada" class="form-label">Tarifa Aplicada ($/kWh)</label>
+                                <input type="number" class="form-control" id="tarifaAplicada" step="0.01" value="0.85" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="periodoConsumo" class="form-label">Período de Consumo (días)</label>
+                                <input type="number" class="form-control" id="periodoConsumo" value="30" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-cfe" onclick="calcularTarifas()">Calcular Montos</button>
+                    
+                    <div class="result-box mt-3" id="tarifasResult" style="display: none;">
+                        <h5>Detalle de Cálculos:</h5>
+                        <p>Subtotal: $<span id="subtotal">0.00</span></p>
+                        <p>IVA (16%): $<span id="iva">0.00</span></p>
+                        <p>Total: $<span id="total">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paso 4: Adeudos y recargos -->
+            <div class="step-card" id="step4">
+                <div class="step-title">
+                    <span class="step-number">4</span>
+                    Adeudos y Recargos
+                </div>
+                <p>Verificar adeudos anteriores y aplicar recargos por atraso.</p>
+                
+                <div class="form-section">
+                    <div class="mb-3">
+                        <label for="adeudosPrevios" class="form-label">Adeudos Previos</label>
+                        <input type="number" class="form-control" id="adeudosPrevios" step="0.01" value="0.00">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="diasAtraso" class="form-label">Días de Atraso (si aplica)</label>
+                        <input type="number" class="form-control" id="diasAtraso" min="0" value="0">
+                    </div>
+                    
+                    <button class="btn btn-cfe" onclick="calcularAdeudos()">Calcular Adeudos</button>
+                    
+                    <div class="result-box mt-3" id="adeudosResult" style="display: none;">
+                        <h5>Detalle de Adeudos:</h5>
+                        <p>Recargo por atraso: $<span id="recargo">0.00</span></p>
+                        <p>Saldo acumulado: $<span id="saldoAcumulado">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paso 5: Generación de factura -->
+            <div class="step-card" id="step5">
+                <div class="step-title">
+                    <span class="step-number">5</span>
+                    Generación de Factura
+                </div>
+                <p>Crear la factura final con todos los detalles calculados.</p>
+                
+                <div class="form-section">
+                    <button class="btn btn-cfe" onclick="generarFactura()">Generar Factura</button>
+                    
+                    <div class="invoice-preview mt-3" id="facturaPreview" style="display: none;">
+                        <h4 class="text-center">CFE - FACTURA DE ENERGÍA ELÉCTRICA</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Número de Servicio:</strong> <span id="numServicio">123456789</span></p>
+                                <p><strong>Nombre del Cliente:</strong> <span id="nombreCliente">Juan Pérez Hernández</span></p>
+                                <p><strong>Dirección:</strong> <span id="direccionCliente">Av. Principal #123, Col. Centro</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Período de Facturación:</strong> <span id="periodoFacturacion">01/10/2023 - 31/10/2023</span></p>
+                                <p><strong>Fecha de Emisión:</strong> <span id="fechaEmision">01/11/2023</span></p>
+                                <p><strong>Fecha de Vencimiento:</strong> <span id="fechaVencimiento">15/11/2023</span></p>
+                            </div>
+                        </div>
+                        <hr>
+                        <h5>Detalle de Consumo</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Concepto</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Lectura Anterior (kWh)</td>
+                                    <td id="facturaLecturaAnterior">1250</td>
+                                </tr>
+                                <tr>
+                                    <td>Lectura Actual (kWh)</td>
+                                    <td id="facturaLecturaActual">1450</td>
+                                </tr>
+                                <tr>
+                                    <td>Consumo (kWh)</td>
+                                    <td id="facturaConsumo">200</td>
+                                </tr>
+                                <tr>
+                                    <td>Tarifa Aplicada</td>
+                                    <td id="facturaTarifa">$0.85</td>
+                                </tr>
+                                <tr>
+                                    <td>Subtotal</td>
+                                    <td id="facturaSubtotal">$170.00</td>
+                                </tr>
+                                <tr>
+                                    <td>IVA (16%)</td>
+                                    <td id="facturaIva">$27.20</td>
+                                </tr>
+                                <tr>
+                                    <td>Recargos</td>
+                                    <td id="facturaRecargos">$0.00</td>
+                                </tr>
+                                <tr class="table-success">
+                                    <td><strong>TOTAL A PAGAR</strong></td>
+                                    <td><strong id="facturaTotal">$197.20</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-cfe" onclick="finalizarProceso()">Finalizar Proceso</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del equipo -->
+        <footer class="text-center">
+            <h5>Equipo 7 - Ingeniería de Datos</h5>
+            <p>Juárez Reyes César Augusto | Casanova Balam Jesús Alberto | Hernandez Bermeo Diederik Bayani | Miranda Sandaña Andre Miguel</p>
+            <p>Quinto Semestre - UNAM-FES ACATLÁN</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStep = 1;
+        let consumo = 0;
+        let subtotal = 0;
+        let iva = 0;
+        let total = 0;
+        let recargo = 0;
+        let saldoAcumulado = 0;
+        
+        function updateProgress() {
+            const progress = (currentStep / 5) * 100;
+            document.getElementById('progressBar').style.width = ${progress}%;
+        }
+        
+        function calcularConsumo() {
+            const lecturaAnterior = parseInt(document.getElementById('lecturaAnterior').value);
+            const lecturaActual = parseInt(document.getElementById('lecturaActual').value);
+            
+            if (lecturaActual <= lecturaAnterior) {
+                alert('La lectura actual debe ser mayor que la lectura anterior');
+                return;
+            }
+            
+            consumo = lecturaActual - lecturaAnterior;
+            document.getElementById('consumoCalculado').textContent = consumo;
+            document.getElementById('consumoResult').style.display = 'block';
+            
+            // Marcar paso como completado y avanzar
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+            currentStep = 2;
+            updateProgress();
+        }
+        
+        function validarDatos() {
+            const valSecuencia = document.getElementById('valSecuencia').checked;
+            const valConsumo = document.getElementById('valConsumo').checked;
+            const valAnomalias = document.getElementById('valAnomalias').checked;
+            
+            let msg = "Validaciones completadas: ";
+            let validaciones = [];
+            
+            if (valSecuencia) validaciones.push("secuencia y tiempo");
+            if (valConsumo) validaciones.push("consumo");
+            if (valAnomalias) validaciones.push("detección de anomalías");
+            
+            msg += validaciones.join(", ");
+            document.getElementById('validacionMsg').textContent = msg;
+            document.getElementById('validacionResult').style.display = 'block';
+            
+            // Marcar paso como completado y avanzar
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step3').classList.add('active');
+            currentStep = 3;
+            updateProgress();
+        }
+        
+        function calcularTarifas() {
+            const tarifa = parseFloat(document.getElementById('tarifaAplicada').value);
+            
+            subtotal = consumo * tarifa;
+            iva = subtotal * 0.16;
+            total = subtotal + iva;
+            
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('iva').textContent = iva.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+            document.getElementById('tarifasResult').style.display = 'block';
+            
+            // Marcar paso como completado y avanzar
+            document.getElementById('step3').classList.add('completed');
+            document.getElementById('step4').classList.add('active');
+            currentStep = 4;
+            updateProgress();
+        }
+        
+        function calcularAdeudos() {
+            const adeudosPrevios = parseFloat(document.getElementById('adeudosPrevios').value);
+            const diasAtraso = parseInt(document.getElementById('diasAtraso').value);
+            
+            // Calcular recargo (2% por cada 30 días de atraso)
+            recargo = adeudosPrevios * (diasAtraso / 30) * 0.02;
+            saldoAcumulado = total + adeudosPrevios + recargo;
+            
+            document.getElementById('recargo').textContent = recargo.toFixed(2);
+            document.getElementById('saldoAcumulado').textContent = saldoAcumulado.toFixed(2);
+            document.getElementById('adeudosResult').style.display = 'block';
+            
+            // Marcar paso como completado y avanzar
+            document.getElementById('step4').classList.add('completed');
+            document.getElementById('step5').classList.add('active');
+            currentStep = 5;
+            updateProgress();
+        }
+        
+        function generarFactura() {
+            // Actualizar datos en la factura
+            document.getElementById('facturaLecturaAnterior').textContent = document.getElementById('lecturaAnterior').value;
+            document.getElementById('facturaLecturaActual').textContent = document.getElementById('lecturaActual').value;
+            document.getElementById('facturaConsumo').textContent = consumo;
+            document.getElementById('facturaTarifa').textContent = '$' + document.getElementById('tarifaAplicada').value;
+            document.getElementById('facturaSubtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('facturaIva').textContent = '$' + iva.toFixed(2);
+            document.getElementById('facturaRecargos').textContent = '$' + recargo.toFixed(2);
+            document.getElementById('facturaTotal').textContent = '$' + saldoAcumulado.toFixed(2);
+            
+            // Mostrar factura
+            document.getElementById('facturaPreview').style.display = 'block';
+            
+            // Marcar paso como completado
+            document.getElementById('step5').classList.add('completed');
+        }
+        
+        function finalizarProceso() {
+            alert('¡Proceso de facturación completado exitosamente!');
+            // Aquí se podría reiniciar el proceso o redirigir a otra página
+        }
+        
+        // Inicializar
+        document.getElementById('step1').classList.add('active');
+        updateProgress();
+    </script>
+</body>
+</html>
