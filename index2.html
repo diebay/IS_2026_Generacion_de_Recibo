@@ -3,755 +3,953 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Facturación CFE - Proceso Completo</title>
+    <title>CFE - Sistema de Facturación Corporativo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root {
             --verde-cfe: #00843D;
+            --verde-oscuro: #006b32;
             --verde-claro: #e8f5e9;
             --verde-medio: #c8e6c9;
+            --gris-oscuro: #2c3e50;
+            --gris-medio: #546e7a;
+            --gris-claro: #eceff1;
         }
         
         body {
-            background: linear-gradient(to bottom, #f8fff8, #e0f7e9);
-            padding-top: 20px;
-            padding-bottom: 40px;
+            background: linear-gradient(135deg, #f8fff8 0%, #e8f5e9 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
         }
-        
-        .header-section {
-            background: linear-gradient(135deg, var(--verde-cfe) 0%, #006b32 100%);
+
+        .corporate-header {
+            background: linear-gradient(135deg, var(--verde-cfe) 0%, var(--verde-oscuro) 100%);
             color: white;
-            padding: 25px 0;
-            margin-bottom: 30px;
-            border-radius: 10px;
+            padding: 1.5rem 0;
             box-shadow: 0 4px 12px rgba(0, 132, 61, 0.3);
+            border-bottom: 4px solid var(--verde-oscuro);
         }
-        
-        .logo-container {
-            text-align: center;
-            margin-bottom: 15px;
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        
-        .logo {
-            font-size: 2.5rem;
+
+        .corporate-logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            background-color: white;
             color: var(--verde-cfe);
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 50%;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        .process-section {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 5px solid var(--verde-cfe);
+
+        .process-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gris-claro);
+            margin: 2rem 0;
+            overflow: hidden;
         }
-        
-        .process-title {
-            border-bottom: 2px solid var(--verde-medio);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            color: var(--verde-cfe);
-            font-weight: 600;
+
+        .process-navigation {
+            background: var(--gris-claro);
+            padding: 1.5rem;
+            border-bottom: 1px solid #ddd;
         }
-        
-        .step-card {
-            background-color: var(--verde-claro);
-            border: 1px solid var(--verde-medio);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+
+        .nav-process {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
-        
-        .step-card.active {
-            background-color: white;
-            border: 2px solid var(--verde-cfe);
-            box-shadow: 0 4px 8px rgba(0, 132, 61, 0.2);
+
+        .process-step:hover {
+            transform: translateY(-2px);
         }
-        
-        .step-card.completed {
-            background-color: #f0f9f0;
-            border: 1px solid #a3d9a5;
+
+        .process-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: var(--gris-medio);
+            opacity: 0.3;
         }
-        
-        .step-card.pending {
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            opacity: 0.7;
-        }
-        
-        .step-number {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            background-color: var(--verde-cfe);
-            color: white;
+
+        .step-indicator {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            margin-right: 10px;
+            background: var(--gris-claro);
+            border: 3px solid var(--gris-medio);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
+            color: var(--gris-medio);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
         }
-        
-        .step-title {
-            font-weight: 600;
-            color: var(--verde-cfe);
-            margin-bottom: 10px;
-        }
-        
-        .form-section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 15px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .btn-cfe {
-            background-color: var(--verde-cfe);
+
+        .step-indicator.active {
+            background: var(--verde-cfe);
+            border-color: var(--verde-oscuro);
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 600;
+            transform: scale(1.1);
         }
-        
-        .btn-cfe:hover {
-            background-color: #006b32;
+
+        .step-indicator.completed {
+            background: var(--verde-cfe);
+            border-color: var(--verde-oscuro);
             color: white;
         }
-        
-        .btn-cfe:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+
+        .step-indicator.available {
+            background: white;
+            border-color: var(--verde-cfe);
+            color: var(--verde-cfe);
+            cursor: pointer;
         }
-        
-        .result-box {
-            background-color: #f8fff8;
-            border: 1px solid var(--verde-medio);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
+
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gris-medio);
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        
-        .invoice-preview {
-            background-color: white;
-            border: 2px dashed var(--verde-cfe);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .progress-bar-cfe {
-            background-color: var(--verde-cfe);
-        }
-        
-        .nav-pills .nav-link.active {
-            background-color: var(--verde-cfe);
-        }
-        
-        .nav-pills .nav-link {
+
+        .step-label.active {
             color: var(--verde-cfe);
         }
-        
-        .validation-error {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 5px;
+
+        .step-label.available {
+            color: var(--verde-cfe);
+            cursor: pointer;
+        }
+
+        .process-content {
+            padding: 2rem;
+            min-height: 500px;
+        }
+
+        .process-section {
             display: none;
         }
-        
-        .is-invalid {
-            border-color: #dc3545;
+
+        .process-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
         }
-        
-        footer {
-            background-color: var(--verde-cfe);
-            color: white;
-            padding: 20px 0;
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--verde-claro);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--gris-oscuro);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--gris-medio);
+            font-size: 1.1rem;
+        }
+
+        .form-card {
+            background: var(--gris-claro);
             border-radius: 10px;
-            margin-top: 30px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--verde-cfe);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gris-oscuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--verde-cfe);
+            box-shadow: 0 0 0 0.2rem rgba(0, 132, 61, 0.1);
+        }
+
+        .btn-cfe {
+            background: linear-gradient(135deg, var(--verde-cfe) 0%, var(--verde-oscuro) 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cfe:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 132, 61, 0.3);
+        }
+
+        .btn-outline-cfe {
+            background: transparent;
+            color: var(--verde-cfe);
+            border: 2px solid var(--verde-cfe);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-cfe:hover {
+            background: var(--verde-cfe);
+            color: white;
+        }
+
+        .results-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 2px solid var(--verde-claro);
+            margin-top: 1.5rem;
+        }
+
+        .results-header {
+            color: var(--verde-cfe);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .data-table th {
+            background: var(--verde-claro);
+            color: var(--gris-oscuro);
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid var(--verde-medio);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .total-row {
+            background: var(--verde-claro);
+            font-weight: 700;
+            color: var(--gris-oscuro);
+        }
+
+        .navigation-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: var(--verde-claro);
+            color: var(--verde-oscuro);
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .invoice-preview {
+            background: white;
+            border: 2px solid var(--verde-cfe);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .invoice-header {
+            text-align: center;
+            border-bottom: 3px solid var(--verde-cfe);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section {
+            background: var(--gris-oscuro);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .completion-summary {
+            background: linear-gradient(135deg, var(--verde-cfe) 0%, var(--verde-oscuro) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .quick-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-nav-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--verde-cfe);
+            border-radius: 20px;
+            background: white;
+            color: var(--verde-cfe);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-nav-btn:hover {
+            background: var(--verde-cfe);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .process-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
+    <!-- Header Corporativo -->
+    <header class="corporate-header">
+        <div class="container">
+            <div class="logo-section">
+                <div class="corporate-logo">CFE</div>
+                <div>
+                    <h1 class="h3 mb-1">Sistema de Facturación CFE</h1>
+                    <p class="mb-0 opacity-75">Plataforma Corporativa de Gestión de Consumo Eléctrico</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <!-- Encabezado -->
-        <div class="header-section text-center">
-            <div class="logo-container">
-                <div class="logo">CFE</div>
+        <!-- Contenedor Principal del Proceso -->
+        <div class="process-container">
+            <!-- Navegación por Pasos -->
+            <div class="process-navigation">
+                <div class="nav-process">
+                    <div class="process-step" onclick="showProcess(1)">
+                        <div class="step-indicator active" id="step1-indicator">1</div>
+                        <span class="step-label active">Captura de Lectura</span>
+                    </div>
+                    <div class="process-step" onclick="showProcess(2)">
+                        <div class="step-indicator available" id="step2-indicator">2</div>
+                        <span class="step-label available">Validación de Datos</span>
+                    </div>
+                    <div class="process-step" onclick="showProcess(3)">
+                        <div class="step-indicator available" id="step3-indicator">3</div>
+                        <span class="step-label available">Cálculo Tarifario</span>
+                    </div>
+                    <div class="process-step" onclick="showProcess(4)">
+                        <div class="step-indicator available" id="step4-indicator">4</div>
+                        <span class="step-label available">Gestión de Adeudos</span>
+                    </div>
+                    <div class="process-step" onclick="showProcess(5)">
+                        <div class="step-indicator available" id="step5-indicator">5</div>
+                        <span class="step-label available">Emisión de Factura</span>
+                    </div>
+                </div>
             </div>
-            <h1>Sistema de Facturación - Proceso Completo</h1>
-            <p class="lead mt-3">Siga los pasos para completar el proceso de facturación</p>
-        </div>
 
-        <!-- Barra de progreso -->
-        <div class="progress mb-5" style="height: 10px;">
-            <div class="progress-bar progress-bar-cfe" role="progressbar" style="width: 0%;" id="progressBar"></div>
-        </div>
+            <!-- Navegación Rápida -->
+            <div class="quick-nav p-3 border-bottom">
+                <button class="quick-nav-btn" onclick="showProcess(1)">
+                    <i class="bi bi-speedometer2 me-1"></i>Lectura
+                </button>
+                <button class="quick-nav-btn" onclick="showProcess(2)">
+                    <i class="bi bi-clipboard-check me-1"></i>Validación
+                </button>
+                <button class="quick-nav-btn" onclick="showProcess(3)">
+                    <i class="bi bi-calculator me-1"></i>Cálculos
+                </button>
+                <button class="quick-nav-btn" onclick="showProcess(4)">
+                    <i class="bi bi-clock-history me-1"></i>Adeudos
+                </button>
+                <button class="quick-nav-btn" onclick="showProcess(5)">
+                    <i class="bi bi-file-earmark-text me-1"></i>Factura
+                </button>
+            </div>
 
-        <!-- Proceso de Facturación -->
-        <div class="process-section">
-            <h3 class="process-title">Proceso de Facturación CFE</h3>
-            
-            <!-- Paso 1: Lectura del medidor -->
-            <div class="step-card active" id="step1">
-                <div class="step-title">
-                    <span class="step-number">1</span>
-                    Lectura del Medidor
-                </div>
-                <p>El lecturista de CFE realiza la lectura del consumo de energía.</p>
-                
-                <div class="form-section">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="lecturaAnterior" class="form-label">Lectura Anterior (kWh)</label>
-                                <input type="number" class="form-control" id="lecturaAnterior" value="1250" readonly>
+            <!-- Contenido de los Procesos -->
+            <div class="process-content">
+                <!-- Proceso 1: Captura de Lectura -->
+                <div class="process-section active" id="process1">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-speedometer2 me-2"></i>
+                            Captura y Registro de Lectura de Medidor
+                        </h2>
+                        <p class="section-subtitle">Sistema de captura y validación inicial de lecturas de consumo eléctrico</p>
+                    </div>
+
+                    <div class="process-status">
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Disponible
+                        </span>
+                        <small class="text-muted">Puede avanzar a cualquier proceso en cualquier momento</small>
+                    </div>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Información del Servicio</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Número de Servicio</label>
+                                <input type="text" class="form-control" value="CFE-7845-2023-001" readonly>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="lecturaActual" class="form-label">Lectura Actual (kWh) *</label>
-                                <input type="number" class="form-control" id="lecturaActual" min="1251" value="" required>
-                                <div class="validation-error" id="errorLecturaActual">Este campo es obligatorio y debe ser mayor a la lectura anterior</div>
+                            <div>
+                                <label class="form-label">Fecha de Lectura</label>
+                                <input type="date" class="form-control" value="2023-11-01">
                             </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-cfe" id="btnCalcularConsumo" onclick="calcularConsumo()" disabled>Calcular Consumo</button>
-                    
-                    <div class="result-box mt-3" id="consumoResult" style="display: none;">
-                        <h5>Resultado del Cálculo:</h5>
-                        <p>Consumo calculado: <span id="consumoCalculado">0</span> kWh</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Paso 2: Validación de datos -->
-            <div class="step-card pending" id="step2">
-                <div class="step-title">
-                    <span class="step-number">2</span>
-                    Validación de Datos
-                </div>
-                <p>Validar secuencia, tiempo de consumo y detección de anomalías.</p>
-                
-                <div class="form-section">
-                    <div class="mb-3">
-                        <label for="tipoServicio" class="form-label">Tipo de Servicio *</label>
-                        <select class="form-select" id="tipoServicio" required>
-                            <option value="">Seleccione un tipo de servicio</option>
-                            <option value="domestico">Doméstico</option>
-                            <option value="comercial">Comercial</option>
-                            <option value="industrial">Industrial</option>
-                        </select>
-                        <div class="validation-error" id="errorTipoServicio">Debe seleccionar un tipo de servicio</div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Validaciones *</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="valSecuencia" required>
-                            <label class="form-check-label" for="valSecuencia">
-                                Validar secuencia y tiempo
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="valConsumo" required>
-                            <label class="form-check-label" for="valConsumo">
-                                Validar consumo
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="valAnomalias">
-                            <label class="form-check-label" for="valAnomalias">
-                                Detección de anomalías
-                            </label>
-                        </div>
-                        <div class="validation-error" id="errorValidaciones">Debe completar las validaciones obligatorias</div>
-                    </div>
-                    
-                    <button class="btn btn-cfe" id="btnValidarDatos" onclick="validarDatos()" disabled>Validar Datos</button>
-                    
-                    <div class="result-box mt-3" id="validacionResult" style="display: none;">
-                        <h5>Resultado de Validación:</h5>
-                        <p id="validacionMsg">Los datos han sido validados correctamente.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Paso 3: Cálculo de tarifas -->
-            <div class="step-card pending" id="step3">
-                <div class="step-title">
-                    <span class="step-number">3</span>
-                    Cálculo de Tarifas y Montos
-                </div>
-                <p>Aplicar precio de acuerdo al consumo, calcular IVA y subtotal.</p>
-                
-                <div class="form-section">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="tarifaAplicada" class="form-label">Tarifa Aplicada ($/kWh) *</label>
-                                <input type="number" class="form-control" id="tarifaAplicada" step="0.01" value="" required>
-                                <div class="validation-error" id="errorTarifa">Debe ingresar una tarifa válida</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="periodoConsumo" class="form-label">Período de Consumo (días) *</label>
-                                <input type="number" class="form-control" id="periodoConsumo" value="" min="1" required>
-                                <div class="validation-error" id="errorPeriodo">Debe ingresar un período válido</div>
+                            <div>
+                                <label class="form-label">ID del Lecturista</label>
+                                <input type="text" class="form-control" value="LECT-0452" readonly>
                             </div>
                         </div>
                     </div>
-                    
-                    <button class="btn btn-cfe" id="btnCalcularTarifas" onclick="calcularTarifas()" disabled>Calcular Montos</button>
-                    
-                    <div class="result-box mt-3" id="tarifasResult" style="display: none;">
-                        <h5>Detalle de Cálculos:</h5>
-                        <p>Subtotal: $<span id="subtotal">0.00</span></p>
-                        <p>IVA (16%): $<span id="iva">0.00</span></p>
-                        <p>Total: $<span id="total">0.00</span></p>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Registro de Lecturas</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Lectura Anterior (kWh)</label>
+                                <input type="number" class="form-control" id="previousReading" value="1250" readonly>
+                                <small class="text-muted">Registrada: 01/10/2023</small>
+                            </div>
+                            <div>
+                                <label class="form-label">Lectura Actual (kWh)</label>
+                                <input type="number" class="form-control" id="currentReading" value="1450" min="1251">
+                                <small class="text-muted">Lectura actual del medidor</small>
+                            </div>
+                            <div>
+                                <label class="form-label">Consumo Calculado</label>
+                                <input type="number" class="form-control" id="calculatedConsumption" value="200" readonly>
+                                <small class="text-muted">Diferencia automática</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-actions">
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="saveProgress(1)">
+                                <i class="bi bi-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(2)">
+                                Validación <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button class="btn btn-cfe" onclick="calculateConsumption()">
+                                <i class="bi bi-calculator me-2"></i>Calcular Consumo
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Paso 4: Adeudos y recargos -->
-            <div class="step-card pending" id="step4">
-                <div class="step-title">
-                    <span class="step-number">4</span>
-                    Adeudos y Recargos
-                </div>
-                <p>Verificar adeudos anteriores y aplicar recargos por atraso.</p>
-                
-                <div class="form-section">
-                    <div class="mb-3">
-                        <label for="adeudosPrevios" class="form-label">Adeudos Previos *</label>
-                        <input type="number" class="form-control" id="adeudosPrevios" step="0.01" value="" required>
-                        <div class="validation-error" id="errorAdeudos">Debe ingresar un valor para adeudos previos</div>
+
+                <!-- Proceso 2: Validación de Datos -->
+                <div class="process-section" id="process2">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-clipboard-check me-2"></i>
+                            Validación y Control de Calidad de Datos
+                        </h2>
+                        <p class="section-subtitle">Sistema integral de validación y análisis de consistencia de datos</p>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="diasAtraso" class="form-label">Días de Atraso (si aplica) *</label>
-                        <input type="number" class="form-control" id="diasAtraso" min="0" value="" required>
-                        <div class="validation-error" id="errorDiasAtraso">Debe ingresar un valor para días de atraso</div>
+
+                    <div class="process-status">
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Disponible
+                        </span>
+                        <small class="text-muted">Acceso directo habilitado - No requiere completar procesos anteriores</small>
                     </div>
-                    
-                    <button class="btn btn-cfe" id="btnCalcularAdeudos" onclick="calcularAdeudos()" disabled>Calcular Adeudos</button>
-                    
-                    <div class="result-box mt-3" id="adeudosResult" style="display: none;">
-                        <h5>Detalle de Adeudos:</h5>
-                        <p>Recargo por atraso: $<span id="recargo">0.00</span></p>
-                        <p>Saldo acumulado: $<span id="saldoAcumulado">0.00</span></p>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Parámetros de Validación</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Tipo de Servicio</label>
+                                <select class="form-control">
+                                    <option>Doméstico</option>
+                                    <option>Comercial</option>
+                                    <option>Industrial</option>
+                                    <option>Agrícola</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Zona Tarifaria</label>
+                                <select class="form-control">
+                                    <option>Centro</option>
+                                    <option>Norte</option>
+                                    <option>Sur</option>
+                                    <option>Este</option>
+                                    <option>Oeste</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Patrón de Consumo</label>
+                                <select class="form-control">
+                                    <option>Residencial Estándar</option>
+                                    <option>Alto Consumo</option>
+                                    <option>Bajo Consumo</option>
+                                    <option>Estacional</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Paso 5: Generación de factura -->
-            <div class="step-card pending" id="step5">
-                <div class="step-title">
-                    <span class="step-number">5</span>
-                    Generación de Factura
-                </div>
-                <p>Crear la factura final con todos los detalles calculados.</p>
-                
-                <div class="form-section">
-                    <div class="mb-3">
-                        <label for="nombreCliente" class="form-label">Nombre del Cliente *</label>
-                        <input type="text" class="form-control" id="nombreCliente" value="" required>
-                        <div class="validation-error" id="errorNombreCliente">Debe ingresar el nombre del cliente</div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="direccionCliente" class="form-label">Dirección *</label>
-                        <input type="text" class="form-control" id="direccionCliente" value="" required>
-                        <div class="validation-error" id="errorDireccionCliente">Debe ingresar la dirección del cliente</div>
-                    </div>
-                    
-                    <button class="btn btn-cfe" id="btnGenerarFactura" onclick="generarFactura()" disabled>Generar Factura</button>
-                    
-                    <div class="invoice-preview mt-3" id="facturaPreview" style="display: none;">
-                        <h4 class="text-center">CFE - FACTURA DE ENERGÍA ELÉCTRICA</h4>
-                        <hr>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Validaciones Automáticas</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Número de Servicio:</strong> <span id="numServicio">123456789</span></p>
-                                <p><strong>Nombre del Cliente:</strong> <span id="facturaNombreCliente">-</span></p>
-                                <p><strong>Dirección:</strong> <span id="facturaDireccionCliente">-</span></p>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">
+                                        <span class="status-badge status-completed">
+                                            <i class="bi bi-check-circle"></i> Validada
+                                        </span>
+                                        Secuencia temporal de lecturas
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">
+                                        <span class="status-badge status-completed">
+                                            <i class="bi bi-check-circle"></i> Validada
+                                        </span>
+                                        Rango de consumo histórico
+                                    </label>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Período de Facturación:</strong> <span id="periodoFacturacion">01/10/2023 - 31/10/2023</span></p>
-                                <p><strong>Fecha de Emisión:</strong> <span id="fechaEmision">01/11/2023</span></p>
-                                <p><strong>Fecha de Vencimiento:</strong> <span id="fechaVencimiento">15/11/2023</span></p>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">
+                                        <span class="status-badge status-pending">
+                                            <i class="bi bi-clock"></i> Pendiente
+                                        </span>
+                                        Detección de anomalías
+                                    </label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">
+                                        <span class="status-badge status-pending">
+                                            <i class="bi bi-clock"></i> Pendiente
+                                        </span>
+                                        Consistencia con patrones
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <hr>
-                        <h5>Detalle de Consumo</h5>
-                        <table class="table table-bordered">
+                    </div>
+
+                    <div class="navigation-actions">
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(1)">
+                                <i class="bi bi-arrow-left me-2"></i>Lectura
+                            </button>
+                            <button class="btn btn-outline-cfe" onclick="saveProgress(2)">
+                                <i class="bi bi-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(3)">
+                                Cálculos <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button class="btn btn-cfe" onclick="runValidations()">
+                                <i class="bi bi-play-circle me-2"></i>Ejecutar Validaciones
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proceso 3: Cálculo Tarifario -->
+                <div class="process-section" id="process3">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-calculator me-2"></i>
+                            Cálculo y Aplicación de Tarifas
+                        </h2>
+                        <p class="section-subtitle">Sistema de cálculo tarifario automatizado con múltiples escalones</p>
+                    </div>
+
+                    <div class="process-status">
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Disponible
+                        </span>
+                        <small class="text-muted">Puede realizar cálculos independientemente del estado de otros procesos</small>
+                    </div>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Estructura Tarifaria</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Tarifa Base ($/kWh)</label>
+                                <input type="number" class="form-control" value="0.793" step="0.001">
+                            </div>
+                            <div>
+                                <label class="form-label">Tarifa Intermedia ($/kWh)</label>
+                                <input type="number" class="form-control" value="0.956" step="0.001">
+                            </div>
+                            <div>
+                                <label class="form-label">Tarifa Excedente ($/kWh)</label>
+                                <input type="number" class="form-control" value="2.802" step="0.001">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Parámetros de Cálculo</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Límite Consumo Básico (kWh)</label>
+                                <input type="number" class="form-control" value="150">
+                            </div>
+                            <div>
+                                <label class="form-label">Límite Consumo Intermedio (kWh)</label>
+                                <input type="number" class="form-control" value="300">
+                            </div>
+                            <div>
+                                <label class="form-label">DAP Mensual</label>
+                                <input type="number" class="form-control" value="45.25" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-actions">
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(2)">
+                                <i class="bi bi-arrow-left me-2"></i>Validación
+                            </button>
+                            <button class="btn btn-outline-cfe" onclick="saveProgress(3)">
+                                <i class="bi bi-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(4)">
+                                Adeudos <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button class="btn btn-cfe" onclick="calculateRates()">
+                                <i class="bi bi-calculator me-2"></i>Calcular Tarifas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proceso 4: Gestión de Adeudos -->
+                <div class="process-section" id="process4">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-clock-history me-2"></i>
+                            Gestión de Adeudos y Aplicación de Recargos
+                        </h2>
+                        <p class="section-subtitle">Sistema de gestión integral de adeudos y morosidad</p>
+                    </div>
+
+                    <div class="process-status">
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Disponible
+                        </span>
+                        <small class="text-muted">Acceso directo a gestión de adeudos sin requisitos previos</small>
+                    </div>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Adeudos Pendientes</h5>
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Concepto</th>
-                                    <th>Valor</th>
+                                    <th>Período</th>
+                                    <th>Monto Original</th>
+                                    <th>Días Mora</th>
+                                    <th>Recargo</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Lectura Anterior (kWh)</td>
-                                    <td id="facturaLecturaAnterior">1250</td>
-                                </tr>
-                                <tr>
-                                    <td>Lectura Actual (kWh)</td>
-                                    <td id="facturaLecturaActual">-</td>
-                                </tr>
-                                <tr>
-                                    <td>Consumo (kWh)</td>
-                                    <td id="facturaConsumo">-</td>
-                                </tr>
-                                <tr>
-                                    <td>Tarifa Aplicada</td>
-                                    <td id="facturaTarifa">-</td>
-                                </tr>
-                                <tr>
-                                    <td>Subtotal</td>
-                                    <td id="facturaSubtotal">-</td>
-                                </tr>
-                                <tr>
-                                    <td>IVA (16%)</td>
-                                    <td id="facturaIva">-</td>
-                                </tr>
-                                <tr>
-                                    <td>Recargos</td>
-                                    <td id="facturaRecargos">-</td>
-                                </tr>
-                                <tr class="table-success">
-                                    <td><strong>TOTAL A PAGAR</strong></td>
-                                    <td><strong id="facturaTotal">-</strong></td>
-                                </tr>
+                                <tr><td>Sep 2023</td><td>$187.50</td><td>45</td><td>$16.88</td><td>$204.38</td></tr>
+                                <tr><td>Ago 2023</td><td>$195.20</td><td>75</td><td>$29.28</td><td>$224.48</td></tr>
+                                <tr class="total-row"><td>TOTAL ADEUDOS</td><td>$382.70</td><td>60</td><td>$46.16</td><td><strong>$428.86</strong></td></tr>
                             </tbody>
                         </table>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-cfe" onclick="finalizarProceso()">Finalizar Proceso</button>
+                    </div>
+
+                    <div class="navigation-actions">
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(3)">
+                                <i class="bi bi-arrow-left me-2"></i>Cálculos
+                            </button>
+                            <button class="btn btn-outline-cfe" onclick="saveProgress(4)">
+                                <i class="bi bi-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(5)">
+                                Factura <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button class="btn btn-cfe" onclick="updateDebts()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar Adeudos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proceso 5: Emisión de Factura -->
+                <div class="process-section" id="process5">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Generación y Emisión de Factura
+                        </h2>
+                        <p class="section-subtitle">Sistema final de consolidación y emisión de documentos fiscales</p>
+                    </div>
+
+                    <div class="process-status">
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Disponible
+                        </span>
+                        <small class="text-muted">Puede generar facturas en cualquier momento del proceso</small>
+                    </div>
+
+                    <div class="form-card">
+                        <h5 class="form-label">Datos del Cliente</h5>
+                        <div class="form-grid">
+                            <div>
+                                <label class="form-label">Nombre/Razón Social</label>
+                                <input type="text" class="form-control" value="Juan Pérez Hernández">
+                            </div>
+                            <div>
+                                <label class="form-label">RFC</label>
+                                <input type="text" class="form-control" value="PEHJ830125M76">
+                            </div>
+                            <div>
+                                <label class="form-label">Dirección de Facturación</label>
+                                <input type="text" class="form-control" value="Av. Principal #123, Col. Centro, CP 12345">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-actions">
+                        <div>
+                            <button class="btn btn-outline-cfe me-2" onclick="showProcess(4)">
+                                <i class="bi bi-arrow-left me-2"></i>Adeudos
+                            </button>
+                            <button class="btn btn-outline-cfe" onclick="saveProgress(5)">
+                                <i class="bi bi-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-cfe me-2" onclick="generateInvoice()">
+                                <i class="bi bi-file-earmark-pdf me-2"></i>Generar Factura
+                            </button>
+                            <button class="btn btn-cfe" onclick="showProcess(1)">
+                                <i class="bi bi-house me-2"></i>Inicio
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Información del sistema -->
-        <footer class="text-center">
-            <h5>Sistema de Facturación CFE</h5>
-            <p>Proceso automatizado de facturación de energía eléctrica</p>
-        </footer>
     </div>
+
+    <!-- Footer Corporativo -->
+    <footer class="footer-section">
+        <div class="container text-center">
+            <p class="mb-2">&copy; 2023 Comisión Federal de Electricidad. Todos los derechos reservados.</p>
+            <p class="mb-0 opacity-75">Sistema Corporativo de Facturación - Versión 2.1.0 | Navegación Libre</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let currentStep = 1;
-        let consumo = 0;
-        let subtotal = 0;
-        let iva = 0;
-        let total = 0;
-        let recargo = 0;
-        let saldoAcumulado = 0;
-        
-        // Inicializar eventos de validación
+        let currentProcess = 1;
+
+        // Inicializar todos los procesos como disponibles
+        function initializeProcesses() {
+            for (let i = 1; i <= 5; i++) {
+                const indicator = document.getElementById(`step${i}-indicator`);
+                const label = document.querySelector(`.process-step:nth-child(${i}) .step-label`);
+                
+                indicator.classList.add('available');
+                label.classList.add('available');
+            }
+            
+            // Marcar el primer proceso como activo
+            document.getElementById('step1-indicator').classList.add('active');
+            document.querySelector('.process-step:nth-child(1) .step-label').classList.add('active');
+        }
+
+        function showProcess(processNumber) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.process-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(`process${processNumber}`).classList.add('active');
+
+            // Actualizar indicadores de navegación
+            updateProcessIndicators(processNumber);
+            
+            currentProcess = processNumber;
+        }
+
+        function updateProcessIndicators(processNumber) {
+            // Reset all indicators
+            document.querySelectorAll('.step-indicator').forEach(indicator => {
+                indicator.classList.remove('active');
+            });
+            document.querySelectorAll('.step-label').forEach(label => {
+                label.classList.remove('active');
+            });
+
+            // Marcar el proceso actual como activo
+            const currentIndicator = document.getElementById(`step${processNumber}-indicator`);
+            const currentLabel = document.querySelector(`.process-step:nth-child(${processNumber}) .step-label`);
+            
+            if (currentIndicator && currentLabel) {
+                currentIndicator.classList.add('active');
+                currentLabel.classList.add('active');
+            }
+        }
+
+        // Funciones de utilidad para cada proceso
+        function calculateConsumption() {
+            const previous = parseInt(document.getElementById('previousReading').value);
+            const current = parseInt(document.getElementById('currentReading').value);
+            const consumption = current - previous;
+            document.getElementById('calculatedConsumption').value = consumption;
+            
+            showNotification('Consumo calculado exitosamente: ' + consumption + ' kWh', 'success');
+        }
+
+        function runValidations() {
+            showNotification('Validaciones ejecutadas correctamente', 'success');
+        }
+
+        function calculateRates() {
+            showNotification('Cálculos tarifarios completados', 'success');
+        }
+
+        function updateDebts() {
+            showNotification('Adeudos actualizados correctamente', 'success');
+        }
+
+        function generateInvoice() {
+            showNotification('Factura generada exitosamente', 'success');
+        }
+
+        function saveProgress(processNumber) {
+            showNotification(`Progreso del proceso ${processNumber} guardado`, 'info');
+        }
+
+        function showNotification(message, type) {
+            // Crear notificación simple
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alert);
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+
+        // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
-            // Paso 1: Validación de lectura actual
-            document.getElementById('lecturaActual').addEventListener('input', validateStep1);
-            
-            // Paso 2: Validación de tipo de servicio y validaciones
-            document.getElementById('tipoServicio').addEventListener('change', validateStep2);
-            document.getElementById('valSecuencia').addEventListener('change', validateStep2);
-            document.getElementById('valConsumo').addEventListener('change', validateStep2);
-            
-            // Paso 3: Validación de tarifa y período
-            document.getElementById('tarifaAplicada').addEventListener('input', validateStep3);
-            document.getElementById('periodoConsumo').addEventListener('input', validateStep3);
-            
-            // Paso 4: Validación de adeudos y días de atraso
-            document.getElementById('adeudosPrevios').addEventListener('input', validateStep4);
-            document.getElementById('diasAtraso').addEventListener('input', validateStep4);
-            
-            // Paso 5: Validación de datos del cliente
-            document.getElementById('nombreCliente').addEventListener('input', validateStep5);
-            document.getElementById('direccionCliente').addEventListener('input', validateStep5);
+            initializeProcesses();
+            showProcess(1);
         });
-        
-        function updateProgress() {
-            const progress = (currentStep / 5) * 100;
-            document.getElementById('progressBar').style.width = ${progress}%;
-        }
-        
-        function updateStepStatus(stepNumber, status) {
-            const stepElement = document.getElementById(step${stepNumber});
-            stepElement.classList.remove('active', 'completed', 'pending');
-            stepElement.classList.add(status);
-        }
-        
-        // Validaciones para cada paso
-        function validateStep1() {
-            const lecturaActual = document.getElementById('lecturaActual').value;
-            const lecturaAnterior = parseInt(document.getElementById('lecturaAnterior').value);
-            const btnCalcular = document.getElementById('btnCalcularConsumo');
-            const errorMsg = document.getElementById('errorLecturaActual');
-            
-            if (!lecturaActual || parseInt(lecturaActual) <= lecturaAnterior) {
-                btnCalcular.disabled = true;
-                document.getElementById('lecturaActual').classList.add('is-invalid');
-                errorMsg.style.display = 'block';
-                return false;
-            } else {
-                btnCalcular.disabled = false;
-                document.getElementById('lecturaActual').classList.remove('is-invalid');
-                errorMsg.style.display = 'none';
-                return true;
-            }
-        }
-        
-        function validateStep2() {
-            const tipoServicio = document.getElementById('tipoServicio').value;
-            const valSecuencia = document.getElementById('valSecuencia').checked;
-            const valConsumo = document.getElementById('valConsumo').checked;
-            const btnValidar = document.getElementById('btnValidarDatos');
-            const errorTipo = document.getElementById('errorTipoServicio');
-            const errorValidaciones = document.getElementById('errorValidaciones');
-            
-            let isValid = true;
-            
-            if (!tipoServicio) {
-                document.getElementById('tipoServicio').classList.add('is-invalid');
-                errorTipo.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('tipoServicio').classList.remove('is-invalid');
-                errorTipo.style.display = 'none';
-            }
-            
-            if (!valSecuencia || !valConsumo) {
-                errorValidaciones.style.display = 'block';
-                isValid = false;
-            } else {
-                errorValidaciones.style.display = 'none';
-            }
-            
-            btnValidar.disabled = !isValid;
-            return isValid;
-        }
-        
-        function validateStep3() {
-            const tarifa = document.getElementById('tarifaAplicada').value;
-            const periodo = document.getElementById('periodoConsumo').value;
-            const btnCalcular = document.getElementById('btnCalcularTarifas');
-            const errorTarifa = document.getElementById('errorTarifa');
-            const errorPeriodo = document.getElementById('errorPeriodo');
-            
-            let isValid = true;
-            
-            if (!tarifa || parseFloat(tarifa) <= 0) {
-                document.getElementById('tarifaAplicada').classList.add('is-invalid');
-                errorTarifa.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('tarifaAplicada').classList.remove('is-invalid');
-                errorTarifa.style.display = 'none';
-            }
-            
-            if (!periodo || parseInt(periodo) <= 0) {
-                document.getElementById('periodoConsumo').classList.add('is-invalid');
-                errorPeriodo.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('periodoConsumo').classList.remove('is-invalid');
-                errorPeriodo.style.display = 'none';
-            }
-            
-            btnCalcular.disabled = !isValid;
-            return isValid;
-        }
-        
-        function validateStep4() {
-            const adeudos = document.getElementById('adeudosPrevios').value;
-            const diasAtraso = document.getElementById('diasAtraso').value;
-            const btnCalcular = document.getElementById('btnCalcularAdeudos');
-            const errorAdeudos = document.getElementById('errorAdeudos');
-            const errorDiasAtraso = document.getElementById('errorDiasAtraso');
-            
-            let isValid = true;
-            
-            if (adeudos === '' || parseFloat(adeudos) < 0) {
-                document.getElementById('adeudosPrevios').classList.add('is-invalid');
-                errorAdeudos.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('adeudosPrevios').classList.remove('is-invalid');
-                errorAdeudos.style.display = 'none';
-            }
-            
-            if (diasAtraso === '' || parseInt(diasAtraso) < 0) {
-                document.getElementById('diasAtraso').classList.add('is-invalid');
-                errorDiasAtraso.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('diasAtraso').classList.remove('is-invalid');
-                errorDiasAtraso.style.display = 'none';
-            }
-            
-            btnCalcular.disabled = !isValid;
-            return isValid;
-        }
-        
-        function validateStep5() {
-            const nombre = document.getElementById('nombreCliente').value;
-            const direccion = document.getElementById('direccionCliente').value;
-            const btnGenerar = document.getElementById('btnGenerarFactura');
-            const errorNombre = document.getElementById('errorNombreCliente');
-            const errorDireccion = document.getElementById('errorDireccionCliente');
-            
-            let isValid = true;
-            
-            if (!nombre.trim()) {
-                document.getElementById('nombreCliente').classList.add('is-invalid');
-                errorNombre.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('nombreCliente').classList.remove('is-invalid');
-                errorNombre.style.display = 'none';
-            }
-            
-            if (!direccion.trim()) {
-                document.getElementById('direccionCliente').classList.add('is-invalid');
-                errorDireccion.style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('direccionCliente').classList.remove('is-invalid');
-                errorDireccion.style.display = 'none';
-            }
-            
-            btnGenerar.disabled = !isValid;
-            return isValid;
-        }
-        
-        // Funciones de procesamiento
-        function calcularConsumo() {
-            if (!validateStep1()) return;
-            
-            const lecturaAnterior = parseInt(document.getElementById('lecturaAnterior').value);
-            const lecturaActual = parseInt(document.getElementById('lecturaActual').value);
-            
-            consumo = lecturaActual - lecturaAnterior;
-            document.getElementById('consumoCalculado').textContent = consumo;
-            document.getElementById('consumoResult').style.display = 'block';
-            
-            // Marcar paso como completado y avanzar
-            updateStepStatus(1, 'completed');
-            updateStepStatus(2, 'active');
-            currentStep = 2;
-            updateProgress();
-        }
-        
-        function validarDatos() {
-            if (!validateStep2()) return;
-            
-            const valSecuencia = document.getElementById('valSecuencia').checked;
-            const valConsumo = document.getElementById('valConsumo').checked;
-            const valAnomalias = document.getElementById('valAnomalias').checked;
-            
-            let msg = "Validaciones completadas: ";
-            let validaciones = [];
-            
-            if (valSecuencia) validaciones.push("secuencia y tiempo");
-            if (valConsumo) validaciones.push("consumo");
-            if (valAnomalias) validaciones.push("detección de anomalías");
-            
-            msg += validaciones.join(", ");
-            document.getElementById('validacionMsg').textContent = msg;
-            document.getElementById('validacionResult').style.display = 'block';
-            
-            // Marcar paso como completado y avanzar
-            updateStepStatus(2, 'completed');
-            updateStepStatus(3, 'active');
-            currentStep = 3;
-            updateProgress();
-        }
-        
-        function calcularTarifas() {
-            if (!validateStep3()) return;
-            
-            const tarifa = parseFloat(document.getElementById('tarifaAplicada').value);
-            
-            subtotal = consumo * tarifa;
-            iva = subtotal * 0.16;
-            total = subtotal + iva;
-            
-            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('iva').textContent = iva.toFixed(2);
-            document.getElementById('total').textContent = total.toFixed(2);
-            document.getElementById('tarifasResult').style.display = 'block';
-            
-            // Marcar paso como completado y avanzar
-            updateStepStatus(3, 'completed');
-            updateStepStatus(4, 'active');
-            currentStep = 4;
-            updateProgress();
-        }
-        
-        function calcularAdeudos() {
-            if (!validateStep4()) return;
-            
-            const adeudosPrevios = parseFloat(document.getElementById('adeudosPrevios').value);
-            const diasAtraso = parseInt(document.getElementById('diasAtraso').value);
-            
-            // Calcular recargo (2% por cada 30 días de atraso)
-            recargo = adeudosPrevios * (diasAtraso / 30) * 0.02;
-            saldoAcumulado = total + adeudosPrevios + recargo;
-            
-            document.getElementById('recargo').textContent = recargo.toFixed(2);
-            document.getElementById('saldoAcumulado').textContent = saldoAcumulado.toFixed(2);
-            document.getElementById('adeudosResult').style.display = 'block';
-            
-            // Marcar paso como completado y avanzar
-            updateStepStatus(4, 'completed');
-            updateStepStatus(5, 'active');
-            currentStep = 5;
-            updateProgress();
-        }
-        
-        function generarFactura() {
-            if (!validateStep5()) return;
-            
-            // Actualizar datos en la factura
-            document.getElementById('facturaLecturaAnterior').textContent = document.getElementById('lecturaAnterior').value;
-            document.getElementById('facturaLecturaActual').textContent = document.getElementById('lecturaActual').value;
-            document.getElementById('facturaConsumo').textContent = consumo;
-            document.getElementById('facturaTarifa').textContent = '$' + document.getElementById('tarifaAplicada').value;
-            document.getElementById('facturaSubtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('facturaIva').textContent = '$' + iva.toFixed(2);
-            document.getElementById('facturaRecargos').textContent = '$' + recargo.toFixed(2);
-            document.getElementById('facturaTotal').textContent = '$' + saldoAcumulado.toFixed(2);
-            document.getElementById('facturaNombreCliente').textContent = document.getElementById('nombreCliente').value;
-            document.getElementById('facturaDireccionCliente').textContent = document.getElementById('direccionCliente').value;
-            
-            // Mostrar factura
-            document.getElementById('facturaPreview').style.display = 'block';
-            
-            // Marcar paso como completado
-            updateStepStatus(5, 'completed');
-        }
-        
-        function finalizarProceso() {
-            alert('¡Proceso de facturación completado exitosamente!');
-            // Aquí se podría reiniciar el proceso o redirigir a otra página
-        }
-        
-        // Inicializar
-        updateProgress();
     </script>
 </body>
 </html>
