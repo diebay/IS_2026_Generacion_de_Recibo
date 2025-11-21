@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Facturación CFE - Procesos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --verde-cfe: #00843D;
+            --verde-claro: #e8f5e9;
+            --verde-medio: #c8e6c9;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #f8fff8, #e0f7e9);
+            padding-top: 20px;
+            padding-bottom: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, var(--verde-cfe) 0%, #006b32 100%);
+            color: white;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 132, 61, 0.3);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background-color: white;
+            color: var(--verde-cfe);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .process-view {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--verde-cfe);
+            min-height: 500px;
+            display: none;
+        }
+        
+        .process-view.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .process-title {
+            border-bottom: 2px solid var(--verde-medio);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            color: var(--verde-cfe);
+            font-weight: 600;
+        }
+        
+        .step-card {
+            background-color: var(--verde-claro);
+            border: 1px solid var(--verde-medio);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .step-card.active {
+            background-color: white;
+            border: 2px solid var(--verde-cfe);
+            box-shadow: 0 4px 8px rgba(0, 132, 61, 0.2);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background-color: var(--verde-cfe);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--verde-cfe);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .form-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-cfe {
+            background-color: var(--verde-cfe);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cfe:hover {
+            background-color: #006b32;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 132, 61, 0.3);
+        }
+        
+        .btn-cfe-outline {
+            background-color: transparent;
+            color: var(--verde-cfe);
+            border: 2px solid var(--verde-cfe);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cfe-outline:hover {
+            background-color: var(--verde-cfe);
+            color: white;
+        }
+        
+        .result-box {
+            background-color: #f8fff8;
+            border: 1px solid var(--verde-medio);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .invoice-preview {
+            background-color: white;
+            border: 2px dashed var(--verde-cfe);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .progress-bar-cfe {
+            background-color: var(--verde-cfe);
+        }
+        
+        .nav-pills .nav-link {
+            color: var(--verde-cfe);
+            font-weight: 500;
+            padding: 12px 20px;
+            margin: 0 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--verde-cfe);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .nav-pills .nav-link:hover:not(.active) {
+            background-color: var(--verde-claro);
+        }
+        
+        .process-diagram {
+            background-color: var(--verde-claro);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .flow-step {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--verde-medio);
+            min-width: 120px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .flow-arrow {
+            color: var(--verde-cfe);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .completion-badge {
+            background-color: var(--verde-cfe);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        footer {
+            background-color: var(--verde-cfe);
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Encabezado -->
+        <div class="header-section text-center">
+            <div class="logo-container">
+                <div class="logo">CFE</div>
+            </div>
+            <h1>Sistema de Facturación CFE</h1>
+            <p class="lead mt-3">Proceso completo de facturación paso a paso</p>
+        </div>
+
+        <!-- Navegación entre procesos -->
+        <ul class="nav nav-pills mb-4 justify-content-center" id="processTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="process1-tab" data-bs-toggle="pill" data-bs-target="#process1" type="button" role="tab">
+                    <i class="bi bi-1-circle"></i> Proceso 1
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="process2-tab" data-bs-toggle="pill" data-bs-target="#process2" type="button" role="tab">
+                    <i class="bi bi-2-circle"></i> Proceso 2
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="process3-tab" data-bs-toggle="pill" data-bs-target="#process3" type="button" role="tab">
+                    <i class="bi bi-3-circle"></i> Proceso 3
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="process4-tab" data-bs-toggle="pill" data-bs-target="#process4" type="button" role="tab">
+                    <i class="bi bi-4-circle"></i> Proceso 4
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="process5-tab" data-bs-toggle="pill" data-bs-target="#process5" type="button" role="tab">
+                    <i class="bi bi-5-circle"></i> Proceso 5
+                </button>
+            </li>
+        </ul>
+
+        <!-- Barra de progreso -->
+        <div class="progress mb-4" style="height: 12px;">
+            <div class="progress-bar progress-bar-cfe" role="progressbar" style="width: 20%;" id="progressBar"></div>
+        </div>
+        <div class="text-center mb-4">
+            <span class="completion-badge" id="completionStatus">Proceso 1 de 5</span>
+        </div>
+
+        <div class="tab-content" id="processTabsContent">
+            <!-- Proceso 1: Lectura del Medidor -->
+            <div class="tab-pane fade show active process-view" id="process1" role="tabpanel">
+                <h3 class="process-title">Proceso 1: Lectura del Medidor</h3>
+                
+                <div class="process-diagram">
+                    <h5>Flujo del Proceso</h5>
+                    <div class="process-flow">
+                        <div class="flow-step">Lecturista de CFE</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Lectura</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Generación de Factura</div>
+                    </div>
+                </div>
+
+                <div class="step-card active">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Toma de Lectura
+                    </div>
+                    <p>El lecturista de CFE realiza la lectura del consumo de energía en el domicilio del usuario.</p>
+                    
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lecturaAnterior" class="form-label">Lectura Anterior (kWh)</label>
+                                    <input type="number" class="form-control" id="lecturaAnterior" value="1250" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lecturaActual" class="form-label">Lectura Actual (kWh)</label>
+                                    <input type="number" class="form-control" id="lecturaActual" min="1251" value="1450">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-cfe" onclick="calcularConsumo()">Calcular Consumo</button>
+                        
+                        <div class="result-box mt-3" id="consumoResult" style="display: none;">
+                            <h5>Resultado del Cálculo:</h5>
+                            <p>Consumo calculado: <span id="consumoCalculado">0</span> kWh</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-cfe-outline" disabled>Anterior</button>
+                    <button class="btn btn-cfe" onclick="nextProcess(2)">Siguiente Proceso</button>
+                </div>
+            </div>
+
+            <!-- Proceso 2: Validación de Datos -->
+            <div class="tab-pane fade process-view" id="process2" role="tabpanel">
+                <h3 class="process-title">Proceso 2: Validación de Datos</h3>
+                
+                <div class="process-diagram">
+                    <h5>Flujo de Validación</h5>
+                    <div class="process-flow">
+                        <div class="flow-step">Lectura Histórica</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Validar Secuencia</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Detección Anomalías</div>
+                    </div>
+                </div>
+
+                <div class="step-card active">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Validación y Control de Calidad
+                    </div>
+                    <p>Validar secuencia, tiempo de consumo y detección de anomalías en los datos de consumo.</p>
+                    
+                    <div class="form-section">
+                        <div class="mb-3">
+                            <label for="tipoServicio" class="form-label">Tipo de Servicio</label>
+                            <select class="form-select" id="tipoServicio">
+                                <option value="domestico">Doméstico</option>
+                                <option value="comercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Validaciones Requeridas</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="valSecuencia" checked>
+                                <label class="form-check-label" for="valSecuencia">
+                                    Validar secuencia y tiempo
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="valConsumo" checked>
+                                <label class="form-check-label" for="valConsumo">
+                                    Validar consumo
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="valAnomalias">
+                                <label class="form-check-label" for="valAnomalias">
+                                    Detección de anomalías
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-cfe" onclick="validarDatos()">Validar Datos</button>
+                        
+                        <div class="result-box mt-3" id="validacionResult" style="display: none;">
+                            <h5>Resultado de Validación:</h5>
+                            <p id="validacionMsg">Los datos han sido validados correctamente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-cfe-outline" onclick="previousProcess(1)">Proceso Anterior</button>
+                    <button class="btn btn-cfe" onclick="nextProcess(3)">Siguiente Proceso</button>
+                </div>
+            </div>
+
+            <!-- Proceso 3: Cálculo de Tarifas -->
+            <div class="tab-pane fade process-view" id="process3" role="tabpanel">
+                <h3 class="process-title">Proceso 3: Cálculo de Tarifas</h3>
+                
+                <div class="process-diagram">
+                    <h5>Flujo de Cálculo</h5>
+                    <div class="process-flow">
+                        <div class="flow-step">Energía Consumida</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Aplicar Tarifa</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Calcular IVA</div>
+                    </div>
+                </div>
+
+                <div class="step-card active">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        Aplicación de Tarifas y Cálculos
+                    </div>
+                    <p>Aplicar precio de acuerdo al consumo, calcular IVA y determinar el subtotal.</p>
+                    
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tarifaAplicada" class="form-label">Tarifa Aplicada ($/kWh)</label>
+                                    <input type="number" class="form-control" id="tarifaAplicada" step="0.01" value="0.85">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="periodoConsumo" class="form-label">Período de Consumo (días)</label>
+                                    <input type="number" class="form-control" id="periodoConsumo" value="30">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-cfe" onclick="calcularTarifas()">Calcular Montos</button>
+                        
+                        <div class="result-box mt-3" id="tarifasResult" style="display: none;">
+                            <h5>Detalle de Cálculos:</h5>
+                            <p>Subtotal: $<span id="subtotal">0.00</span></p>
+                            <p>IVA (16%): $<span id="iva">0.00</span></p>
+                            <p>Total: $<span id="total">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-cfe-outline" onclick="previousProcess(2)">Proceso Anterior</button>
+                    <button class="btn btn-cfe" onclick="nextProcess(4)">Siguiente Proceso</button>
+                </div>
+            </div>
+
+            <!-- Proceso 4: Adeudos y Recargos -->
+            <div class="tab-pane fade process-view" id="process4" role="tabpanel">
+                <h3 class="process-title">Proceso 4: Adeudos y Recargos</h3>
+                
+                <div class="process-diagram">
+                    <h5>Flujo de Adeudos</h5>
+                    <div class="process-flow">
+                        <div class="flow-step">Adeudos Previos</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Cálculo Recargos</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Saldo Acumulado</div>
+                    </div>
+                </div>
+
+                <div class="step-card active">
+                    <div class="step-title">
+                        <span class="step-number">4</span>
+                        Gestión de Adeudos y Aplicación de Recargos
+                    </div>
+                    <p>Verificar adeudos anteriores y aplicar recargos por atraso en el pago.</p>
+                    
+                    <div class="form-section">
+                        <div class="mb-3">
+                            <label for="adeudosPrevios" class="form-label">Adeudos Previos</label>
+                            <input type="number" class="form-control" id="adeudosPrevios" step="0.01" value="0.00">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="diasAtraso" class="form-label">Días de Atraso (si aplica)</label>
+                            <input type="number" class="form-control" id="diasAtraso" min="0" value="0">
+                        </div>
+                        
+                        <button class="btn btn-cfe" onclick="calcularAdeudos()">Calcular Adeudos</button>
+                        
+                        <div class="result-box mt-3" id="adeudosResult" style="display: none;">
+                            <h5>Detalle de Adeudos:</h5>
+                            <p>Recargo por atraso: $<span id="recargo">0.00</span></p>
+                            <p>Saldo acumulado: $<span id="saldoAcumulado">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-cfe-outline" onclick="previousProcess(3)">Proceso Anterior</button>
+                    <button class="btn btn-cfe" onclick="nextProcess(5)">Siguiente Proceso</button>
+                </div>
+            </div>
+
+            <!-- Proceso 5: Generación de Factura -->
+            <div class="tab-pane fade process-view" id="process5" role="tabpanel">
+                <h3 class="process-title">Proceso 5: Generación de Factura</h3>
+                
+                <div class="process-diagram">
+                    <h5>Flujo Final</h5>
+                    <div class="process-flow">
+                        <div class="flow-step">Datos Consolidados</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Generar Factura</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">Entrega al Usuario</div>
+                    </div>
+                </div>
+
+                <div class="step-card active">
+                    <div class="step-title">
+                        <span class="step-number">5</span>
+                        Creación y Emisión de Factura
+                    </div>
+                    <p>Crear la factura final con todos los detalles calculados y enviar al usuario.</p>
+                    
+                    <div class="form-section">
+                        <div class="mb-3">
+                            <label for="nombreCliente" class="form-label">Nombre del Cliente</label>
+                            <input type="text" class="form-control" id="nombreCliente" value="Juan Pérez Hernández">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="direccionCliente" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccionCliente" value="Av. Principal #123, Col. Centro">
+                        </div>
+                        
+                        <button class="btn btn-cfe" onclick="generarFactura()">Generar Factura</button>
+                        
+                        <div class="invoice-preview mt-3" id="facturaPreview" style="display: none;">
+                            <h4 class="text-center">CFE - FACTURA DE ENERGÍA ELÉCTRICA</h4>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Número de Servicio:</strong> <span id="numServicio">123456789</span></p>
+                                    <p><strong>Nombre del Cliente:</strong> <span id="facturaNombreCliente">-</span></p>
+                                    <p><strong>Dirección:</strong> <span id="facturaDireccionCliente">-</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Período de Facturación:</strong> <span id="periodoFacturacion">01/10/2023 - 31/10/2023</span></p>
+                                    <p><strong>Fecha de Emisión:</strong> <span id="fechaEmision">01/11/2023</span></p>
+                                    <p><strong>Fecha de Vencimiento:</strong> <span id="fechaVencimiento">15/11/2023</span></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <h5>Detalle de Consumo</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Concepto</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Lectura Anterior (kWh)</td>
+                                        <td id="facturaLecturaAnterior">1250</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lectura Actual (kWh)</td>
+                                        <td id="facturaLecturaActual">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Consumo (kWh)</td>
+                                        <td id="facturaConsumo">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tarifa Aplicada</td>
+                                        <td id="facturaTarifa">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td id="facturaSubtotal">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>IVA (16%)</td>
+                                        <td id="facturaIva">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Recargos</td>
+                                        <td id="facturaRecargos">-</td>
+                                    </tr>
+                                    <tr class="table-success">
+                                        <td><strong>TOTAL A PAGAR</strong></td>
+                                        <td><strong id="facturaTotal">-</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-cfe-outline" onclick="previousProcess(4)">Proceso Anterior</button>
+                    <button class="btn btn-cfe" onclick="finalizarProceso()">Finalizar Proceso</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del sistema -->
+        <footer class="text-center">
+            <h5>Sistema de Facturación CFE</h5>
+            <p>Proceso automatizado de facturación de energía eléctrica</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentProcess = 1;
+        let consumo = 0;
+        let subtotal = 0;
+        let iva = 0;
+        let total = 0;
+        let recargo = 0;
+        let saldoAcumulado = 0;
+        
+        function updateProgress() {
+            const progress = (currentProcess / 5) * 100;
+            document.getElementById('progressBar').style.width = ${progress}%;
+            document.getElementById('completionStatus').textContent = Proceso ${currentProcess} de 5;
+        }
+        
+        function nextProcess(processNumber) {
+            currentProcess = processNumber;
+            updateProgress();
+            
+            // Activar la pestaña correspondiente
+            const tab = document.getElementById(process${processNumber}-tab);
+            if (tab) {
+                tab.click();
+            }
+        }
+        
+        function previousProcess(processNumber) {
+            currentProcess = processNumber;
+            updateProgress();
+            
+            // Activar la pestaña correspondiente
+            const tab = document.getElementById(process${processNumber}-tab);
+            if (tab) {
+                tab.click();
+            }
+        }
+        
+        // Funciones de procesamiento (simplificadas para el ejemplo)
+        function calcularConsumo() {
+            const lecturaAnterior = parseInt(document.getElementById('lecturaAnterior').value);
+            const lecturaActual = parseInt(document.getElementById('lecturaActual').value);
+            
+            consumo = lecturaActual - lecturaAnterior;
+            document.getElementById('consumoCalculado').textContent = consumo;
+            document.getElementById('consumoResult').style.display = 'block';
+            
+            alert(Consumo calculado: ${consumo} kWh. Puede continuar al siguiente proceso.);
+        }
+        
+        function validarDatos() {
+            document.getElementById('validacionResult').style.display = 'block';
+            alert('Datos validados correctamente. Puede continuar al siguiente proceso.');
+        }
+        
+        function calcularTarifas() {
+            const tarifa = parseFloat(document.getElementById('tarifaAplicada').value);
+            
+            subtotal = consumo * tarifa;
+            iva = subtotal * 0.16;
+            total = subtotal + iva;
+            
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('iva').textContent = iva.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+            document.getElementById('tarifasResult').style.display = 'block';
+            
+            alert(Cálculos completados. Total: $${total.toFixed(2)}. Puede continuar al siguiente proceso.);
+        }
+        
+        function calcularAdeudos() {
+            const adeudosPrevios = parseFloat(document.getElementById('adeudosPrevios').value);
+            const diasAtraso = parseInt(document.getElementById('diasAtraso').value);
+            
+            recargo = adeudosPrevios * (diasAtraso / 30) * 0.02;
+            saldoAcumulado = total + adeudosPrevios + recargo;
+            
+            document.getElementById('recargo').textContent = recargo.toFixed(2);
+            document.getElementById('saldoAcumulado').textContent = saldoAcumulado.toFixed(2);
+            document.getElementById('adeudosResult').style.display = 'block';
+            
+            alert(Adeudos calculados. Saldo acumulado: $${saldoAcumulado.toFixed(2)}. Puede continuar al siguiente proceso.);
+        }
+        
+        function generarFactura() {
+            // Actualizar datos en la factura
+            document.getElementById('facturaLecturaAnterior').textContent = document.getElementById('lecturaAnterior').value;
+            document.getElementById('facturaLecturaActual').textContent = document.getElementById('lecturaActual').value;
+            document.getElementById('facturaConsumo').textContent = consumo;
+            document.getElementById('facturaTarifa').textContent = '$' + document.getElementById('tarifaAplicada').value;
+            document.getElementById('facturaSubtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('facturaIva').textContent = '$' + iva.toFixed(2);
+            document.getElementById('facturaRecargos').textContent = '$' + recargo.toFixed(2);
+            document.getElementById('facturaTotal').textContent = '$' + saldoAcumulado.toFixed(2);
+            document.getElementById('facturaNombreCliente').textContent = document.getElementById('nombreCliente').value;
+            document.getElementById('facturaDireccionCliente').textContent = document.getElementById('direccionCliente').value;
+            
+            // Mostrar factura
+            document.getElementById('facturaPreview').style.display = 'block';
+            
+            alert('Factura generada exitosamente. Revise el preview antes de finalizar.');
+        }
+        
+        function finalizarProceso() {
+            alert('¡Proceso de facturación completado exitosamente! La factura ha sido generada y enviada al usuario.');
+        }
+        
+        // Inicializar
+        updateProgress();
+    </script>
+</body>
+</html>
